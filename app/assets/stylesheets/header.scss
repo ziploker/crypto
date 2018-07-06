@@ -1,0 +1,200 @@
+:root{
+	
+	--background: rgba(8, 9, 5, .9);
+}
+
+
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+/* start header style here ----------- */
+.logo{
+		
+		margin-right: 1em;
+		//margin-left: 1em;
+		color: white;
+	}
+body{
+	position: relative;
+}
+header{
+	
+	background: var(--background);
+	text-align: center;
+	//was fixed below
+	position: relative;
+	z-index: 999;
+	width: auto;
+	//height: 100%;
+	grid-column: 1 / 13;
+	
+}
+
+.nav_toggle{
+	display: none;
+}
+
+.nav_toggle_label{
+	position: absolute;
+	top: 0;
+	left: 0;
+	margin-left: 1em;
+	height: 100%;
+	display: flex;
+	align-items: center;
+}
+
+.nav_toggle_label span,
+.nav_toggle_label span::before,
+.nav_toggle_label span::after {
+
+	display: block;
+	background: white;
+	height: 2px;
+	width: 2em;
+	position: relative;
+	border-radius: 2px;
+	//bottom: 20px;
+	
+}
+
+.nav_toggle_label span::before,
+.nav_toggle_label span::after{
+	
+	content: "";
+	position: absolute;
+}
+
+
+.nav_toggle_label span::before{
+	bottom: 7px;
+}
+
+.nav_toggle_label span::after{
+
+	top: 7px
+}
+
+nav {
+  position: absolute;
+  text-align: left;
+  top: 100%;
+  left: 0;
+  background: var(--background);
+  width: 100%;
+  transform: scale(1, 0);
+  transform-origin: top;
+  transition: transform 400ms ease-in-out;
+}
+
+nav ul{
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+nav li{
+	margin-bottom: 1em;
+	margin-left: 1em;
+}
+
+nav a{
+	color: white;
+	text-decoration: none;
+	font-size: 1.2rem;
+	text-transform: uppercase;
+	opacity: 0;
+	transition: opacity 150ms ease-in-out;
+}
+
+nav a:hover{
+	color: rgba(48, 237, 48, 0.71);
+}
+
+.nav_toggle:checked ~ nav{
+	//display: block;
+	transform: scale(1,1);
+}
+
+.nav_toggle:checked ~ nav a{
+	opacity: 1;
+	transition: opacity 250ms ease-in-out 200ms;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+//for the big screen
+@media screen and (min-width: 800px){
+
+	.nav_toggle_label{
+		display: none;
+	}
+
+	header{
+		display: grid;
+		grid-template-columns: 1fr auto minmax(600px, 4fr) 1fr;
+	}
+
+	.logo{
+		grid-column: 2 / 3;
+		margin-right: 1em;
+		//margin-left: 1em;
+	}
+
+	nav{
+		
+		all: unset;
+		grid-column: 3 / 4;
+		display: flex;
+		//border: 1px solid red;
+		justify-content: flex-end;
+		align-items: center;
+	}
+
+	nav ul{
+		display: flex;
+		//justify-content: flex-end;
+		//border: 1px solid red;
+
+	}
+
+	nav li{
+		margin-left: 1em;
+		margin-bottom: 0;
+	}
+
+	nav a{
+		opacity: 1;
+		position: relative;
+	}
+
+	nav a::before{
+		content: '';
+		display: block;
+		height: 5px;
+		background: rgba(34, 223, 69, .777);
+		position: absolute;
+		top: -.75em;
+		left: 0;
+		right: 0;
+		transform: scale(0,1);
+		transition: transform ease-in-out 250ms;
+
+	}
+	
+	nav a:hover::before{
+		transform: scale(1,1);
+
+	}
+}

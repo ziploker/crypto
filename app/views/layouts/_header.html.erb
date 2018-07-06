@@ -1,0 +1,39 @@
+<header>
+	<h1 class='logo'> Logo </h1>
+	<input type="checkbox" id="nav_toggle" class="nav_toggle">
+	
+	<nav>
+		<ul>
+			
+			<li><%= link_to 'Home', root_path  %></li>
+			<li><%= link_to 'Porfolio', porfolio_path  %></li>
+			<li><%= link_to 'Trade', porfolio_trade_path %></li>
+			<li><%= link_to 'Battle', battle_path %></li>
+			<li><%= link_to 'Market', market_path %></li>
+			<li><a href="#">About</a> </li>
+			<% if user_signed_in? %>
+		  					<li class='minimenu'>
+		  						<%= link_to('Logout', destroy_user_session_path, :method => :delete) %>        
+		  					</li>
+						<% else %>
+		  					<li class='minimenu'>
+		  						<%= link_to('Login', new_user_session_path)  %>  
+		  					</li>
+						<% end %>
+						<% if user_signed_in? %>
+		  					<li class='minimenur'>
+		  						<%= link_to('Edit', edit_user_registration_path) %>
+		  					</li>
+						<% else %>
+		  					<li class='minimenur'>
+		  				<%= link_to('Register', new_user_registration_path)  %>
+		  					</li>
+	  					<%end%>
+		</ul>
+	</nav>
+	
+	<label for="nav_toggle" class="nav_toggle_label">
+		<span class="menu_span"></span>
+	</label>
+
+</header>

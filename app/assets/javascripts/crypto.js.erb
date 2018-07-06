@@ -1,0 +1,248 @@
+
+//4AEDB534-C561-42DB-BB7B-B119891AA985
+$(document).ready(function(){
+
+	//temp fix for row number
+	var rowNumber = 0;
+	var symbols = [];
+	var row = {};
+	var savedjson = {};
+	
+	//button click to load table with json
+	$('.button').click(function() {  
+		jsonQuest1();
+		//toController();
+	});
+
+	
+	//json API call 1of2
+	function jsonQuest1(){
+
+		$.getJSON('https://min-api.cryptocompare.com/data/top/totalvol?limit=10&tsym=USD', function(json){
+			
+			getSymbols(json);
+			//console.log(json);
+		});
+	};
+
+
+	//gets symbols used for future json searches
+	function getSymbols(json){
+		
+		$.each(json.Data, function(n, elem) {
+			symbols.push(elem.CoinInfo.Name);
+		});
+		jsonQuest2(json, symbols);
+		
+	};
+
+	
+	//json API call 2of2
+	function jsonQuest2(json, symbols){
+
+		$.getJSON('https://min-api.cryptocompare.com/data/pricemultifull?fsyms='+symbols+'&tsyms=USD' ,function(json2){
+		
+			buildRow(json, json2);
+			//console.log(json2);
+		});
+	};
+
+
+	//builds row from json data
+	function buildRow(json1, json2){
+		
+		//combine json into one
+		var json = $.extend({}, json1, json2);
+		//console.log(json);
+		//toController(json);
+		savedjson = json;
+		
+		$.each(json.Data, function(x, obj) {
+			
+			rowNumber =  rowNumber + 1
+			
+			price = getInfo(obj.CoinInfo.Name, json, "PRICE");
+			change24hr = getInfo(obj.CoinInfo.Name, json, "CHANGE24HOUR");
+			changepct24hour = getInfo(obj.CoinInfo.Name, json, "CHANGEPCT24HOUR");
+			high24hour = getInfo(obj.CoinInfo.Name, json, "HIGH24HOUR");
+			low24hour = getInfo(obj.CoinInfo.Name, json, "LOW24HOUR");
+			mktcap = getInfo(obj.CoinInfo.Name, json, "MKTCAP");
+			changepctday = getInfo(obj.CoinInfo.Name, json, "CHANGEPCTDAY");
+			changeday = getInfo(obj.CoinInfo.Name, json, "CHANGEDAY");
+			
+			row['rowNum'] = rowNumber;
+			row['Name'] = obj.CoinInfo.Name;
+			row['ImageUrl'] = obj.CoinInfo.ImageUrl;
+			row['FullName'] = obj.CoinInfo.FullName;
+			row['Price'] = price;
+			row['change24hr'] = change24hr;
+			row['changepct24hour'] = changepct24hour;
+			row['changepctday'] = changepctday;
+			row['changeday'] = changeday;
+			row['high24hour'] = high24hour;
+			row['low24hour'] = low24hour;
+			row['mktcap'] = mktcap;
+			row['Url'] = obj.CoinInfo.Url;
+			row['buy'] = "buy";
+			
+			rowMarkup(row);
+			
+		});
+	};
+
+	
+	//function for rowMarkup to get specific info from json
+	function getInfo(symbol, json, text){
+
+		var symbol = symbol;
+		var getInfo = "json.DISPLAY."+symbol+".USD."+text;
+		info = eval(getInfo);
+		return info;
+	}; 
+
+	
+	//function for rowMArkup to check for neg num for css ish.
+	function checkIfNegative(string){
+
+		var n = string.indexOf("-");
+			if (n == "-1"){
+				return "positive";
+			}else{
+				return "negative";
+			}
+
+	};
+	
+	function removeSpaces(object){
+
+		$.each(object, function(x, y) {
+			object[x] = y.toString().replace(/\s+/g, '');
+		});
+		return object;
+	};
+
+	
+	//makes html for view
+	function rowMarkup(row_info){
+		
+		//send to remove spaces from each value
+		row_info = removeSpaces(row_info);
+		
+		$('.main_table tbody').append('<tr>\
+			<td class="col1">'+row_info.rowNum+'</td>\
+			<td class="tableImage col2"><img id\\=\\"theImg\\" src=https://www.cryptocompare.com'+row_info.ImageUrl+'></td>\
+			<td class="col3">'+row_info.FullName+'\
+			<i class="side_symbol">'+row_info.Name+'</i></td>\
+			<td class="col4">'+row_info.Price+'</td>');
+
+			result = checkIfNegative(row_info.changepct24hour);
+
+				if (result == "positive"){
+					$('tr:last').append('<td class="green col5">'+row_info.changepct24hour+'%\
+						<br><i class="side_cash">('+row_info.change24hr+')</i></td>');
+				}else{
+					$('tr:last').append('<td class="red col5">'+row_info.changepct24hour+'%\
+						<br><i class="side_cash">('+row_info.change24hr+')</i></td>');
+				}
+
+			result = checkIfNegative(row_info.changepctday);
+
+				if (result == "positive"){
+					$('tr:last').append('<td class="green col6">'+row_info.changepctday+'%\
+						<br><i class="side_cash">('+row_info.changeday+')</i></td>');
+				}else{
+					$('tr:last').append('<td class="red col6">'+row_info.changepctday+'%\
+						<br><i class="side_cash">('+row_info.changeday+')</i></td>');
+				}
+
+
+			$('tr:last').append('<td class="col7">'+row_info.high24hour+'</td>\
+				<td class="col8">'+row_info.low24hour+'</td>\
+				<td class="col9">'+row_info.mktcap+'</td>\
+				<td class="col10"> BUY </td>\
+				<td class="hidden_name" style="visibility:hidden">'+row_info.Name+'</td></tr>');
+	
+	
+	};
+
+
+
+	function toController(json){
+		
+			$.ajax({
+
+				url: '/battle',
+				datatype: 'json',
+				type: 'POST',
+				data: json,
+				
+				success: function(data) {
+					//var data = JSON.parse(data);
+					alert(data);
+				},
+
+
+				failure: function() {
+
+					alert("unsuccesful");
+				}
+
+
+			});
+	};
+
+
+
+	$('#table_div').on("click", '#table tr', function(){
+    	
+    	
+        
+		$('#table_div').toggle();
+		$('#confirm').toggle();
+		
+
+		var abbr = $(this).closest("tr").children("td.hidden_name").text();
+		var name = $(this).closest("tr").children(".col3").clone().children().remove().end().text().trim();
+
+		
+
+
+
+
+
+		var longN = $(this).closest("tr").find("td:eq(1)").html();
+		var url = $('src', longN);
+		url = url.prevObject[0].currentSrc;
+		alert(url);
+
+		
+	
+		$.getJSON('https://min-api.cryptocompare.com/data/price?fsym='+abbr+'&tsyms=USD', function(json){
+			
+			//$('#confirm_quantity').empty().append(foo);
+			$('#confirm_logo').append(longN);
+			//alert(longN);
+			$('#confirm_name').append(name);
+			$('#confirm_abbr').append(abbr);
+			$('#confirm_price').append(json.USD);
+			//$('#confirm_button').empty().append("Button");
+			console.log(json.USD);
+			
+			$('#wallet_abbr').val(abbr);
+			$('#wallet_name').val(name);
+			$('#wallet_paid').val(json.USD);
+			//$('#wallet_quantity').val("1");
+			$('#wallet_url').val(url);
+			
+
+			
+		});
+
+	});
+
+
+});
+
+	
+
+	

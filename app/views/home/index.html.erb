@@ -1,0 +1,86 @@
+
+
+
+
+
+
+
+<div  id="table_div" class='main_table'>
+	<table id="table">
+		
+		<tbody>
+			<tr>
+				<th class="col1">#</th>
+				<th class="col2">Logo</th>
+				<th class="col3">name</th>
+				<th class="col4">Price</th>
+				<th class="col5">Change 24h</th>
+				<th class="col6">Change hour</th>
+				<th class="col7">High24h</th>
+				<th class="col8">Low24h</th>
+				<th class="col9">MarketCap</th>
+				<th class="buy">BUY</th>
+
+
+				
+			</tr>
+		</tbody>
+		
+	</table>
+	
+
+	<div class='button'></div>
+	
+	
+</div>
+
+<div id="confirm">
+	<div id="confirm_grid">
+		
+		
+
+		<div id="confirm_logo"></div>
+					
+		<div >
+			<h1 id="confirm_name"></h1>
+			<i id="confirm_abbr">
+
+			</i>
+
+		</div>
+		
+		<div id="confirm_price"></div>
+		<div id="confirm_button">
+
+			
+			<% if current_user %>
+
+				<%= form_for @wallet, :url => porfolio_path(@wallet) do |f| %>
+					<%= f.text_field :abbr, placeholder: "abbr" %>
+					<%= f.text_field :name, placeholder: "Name" %>
+					<%= f.number_field :quantity, placeholder: "QNTY", min: 1  %>
+					<%= f.text_field :paid, placeholder: "PAID" %>
+					<%= f.text_field :url, placeholder: "URL" %>
+					<%= f.submit "Buy" %>
+				
+				<% end %>
+			<% end %>
+
+			
+			
+
+		</div>
+
+	</div>
+
+</div>
+
+<footer>footer
+
+
+		
+
+
+
+
+</footer>

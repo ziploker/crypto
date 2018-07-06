@@ -1,0 +1,39 @@
+<h1>Edit article</h1>
+ 
+    
+  <%= form_with(model: @wallet, local: true) do |form| %>
+    <p>
+      <%= form.label :abbr %><br>
+      <%= form.text_field :abbr %>
+    </p>
+   
+    <p>
+      <%= form.label :name %><br>
+      <%= form.text_area :name %>
+    </p>
+   
+
+    <p>
+      <%= form.label :quantity %><br>
+      <%= form.text_field :quantity %>
+    </p>
+   
+    <p>
+      <%= form.label :paid %><br>
+      <%= form.text_area :paid %>
+    </p>
+
+    <p>
+      <%= form.label :current_value %><br>
+      <%= form.text_field :current_value %>
+    </p>
+   
+    <p>
+      <%= form.label :profit_loss %><br>
+      <%= form.text_area :profit_loss %>
+    </p>
+    <p>
+      <%= form.submit %>
+    </p>
+  
+<%end%>

@@ -1,0 +1,77 @@
+function numberWithCommas(number) {
+    var parts = number.toString().split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return parts.join(".");
+}
+
+
+$( document ).ready( function() {
+	
+	 
+alert("clickedd");
+	 $('#show_table tr').each(function (i, row)
+            {
+                var sym = $(this).find("td:eq(1)").text();
+                var id = $(this).find("td:eq(0)").text();
+
+
+
+                
+                
+
+            	var num = $(this).find("td:eq(4)").text().replace("$", "").replace(",", "");
+            	
+            	var newnum = parseFloat(num);
+            	var q = $(this).find("td:eq(3)").text();
+            	var quantity = parseFloat(q);
+
+            	var currentPrice = whatsPrice(sym, id, newnum, quantity);
+
+            	
+
+            	
+
+
+
+
+	});
+
+
+
+
+ 	function whatsPrice(sym, id, newnum, quantity){
+
+
+		$.getJSON('https://min-api.cryptocompare.com/data/price?fsym='+sym+'&tsyms=USD', function(json){
+
+			
+			var currentnum = parseFloat(json.USD);
+			currentnum = currentnum.toFixed(2);
+			
+			
+			
+
+			var profit = (currentnum - newnum);
+			profit = profit.toFixed(2);
+
+			currentnum = numberWithCommas(currentnum);
+
+
+			var ttt = newnum * quantity;
+			alert(ttt);
+
+			$("#"+id+"_current").append("$"+currentnum);
+			
+			$("#"+id+"_profit").append(profit);
+
+		});
+
+	};
+
+
+
+
+
+
+
+});

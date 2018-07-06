@@ -1,0 +1,43 @@
+<div id="show_table_div">
+ 
+  <table id="show_table">
+    <tr>
+      <th>ID</th>
+      <th>abbr</th>
+      <th>name</th>
+      <th>quantity</th>
+      <th>paid</th>
+      <th>current value</th>
+      <th>profit/loss</th>
+      <th>created at</th>
+      <th>updated at</th>
+      <th>url</th>
+      <th>USER_ID</th>
+      <th>current usr</th>
+      <th></th>
+    </tr>
+   
+    <% @wal.each do |wallet| %>
+      <tr>
+        <td><%= wallet.id %></td>
+        <td><%= wallet.abbr %></td>
+        <td><%= wallet.name %></td>
+        <td><%= wallet.quantity %></td>
+        <td id="<%=wallet.id%>_paid"><%= number_to_currency wallet.paid %></td>
+        <td id="<%=wallet.id%>_current"><%= number_to_currency wallet.current_value %></td>
+        <td id="<%=wallet.id%>_profit"><%= number_to_currency wallet.profit_loss %></td>
+        <td><%= wallet.created_at %></td>
+        <td><%= wallet.updated_at %></td>
+        <td><%= wallet.url %></td>
+        <td><%= wallet.user_id %></td>
+        <td><%= @current %> </td>
+        
+
+        <td><%= link_to 'show', show_path(wallet) %></td>
+        <td><%= link_to 'edit', edit_path(wallet) %></td>
+        
+      </tr>
+    <% end %>
+  </table>
+</div>
+

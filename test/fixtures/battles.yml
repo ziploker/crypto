@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  status: false
+  finish: 2018-07-03
+  players: 1
+
+two:
+  status: false
+  finish: 2018-07-03
+  players: 1
