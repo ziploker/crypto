@@ -6,5 +6,6 @@ class User < ApplicationRecord
  
  
  has_many :wallets
- has_and_belongs_to_many :battles
+ has_many :rooms
+ has_many :battles, through: :rooms
 end
