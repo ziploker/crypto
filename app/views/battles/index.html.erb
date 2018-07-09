@@ -1,0 +1,58 @@
+<h1> battle view </h1>
+
+<%= @battle.each do |b| %>
+	
+
+		
+
+		<h1> battle ID: <%= b.id %> </h1>
+		<h2> players: <%= b.users.count %></h2>
+
+				<% if current_user %>
+
+				<%= b.users.each do |u| %>
+					<h1>user ID: <%= u.id %></h1>
+					<h1>user email: <%= u.email %></h1>
+
+				<%end%>
+				<% end %>
+			
+
+
+
+
+
+
+<%end%>
+
+
+
+
+
+
+
+
+
+<%= form_for Battle.new do |f| %>
+	
+	<h4><%= f.check_box :status %> <-- status </h4><br>
+	<%= f.text_field :finish, value: Time.now + 10.days  %>
+	<%= f.number_field :players %>
+
+
+	<% if current_user %>
+	<H1>User ID = <%= @user.id %></H1>
+	<H1>User email = <%= @user.email %></H1>
+	<% end %>
+	
+
+
+
+	
+	
+
+	<%= f.submit "start", id: "single_button"  %>
+	<div id="single_div"> 1 vs 1 </div>
+	<div id="tourny"> tournament </div>
+<% end %>
+

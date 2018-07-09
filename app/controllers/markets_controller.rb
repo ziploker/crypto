@@ -1,8 +1,6 @@
-class HomeController < ApplicationController
+class MarketsController < ApplicationController
 
-
-
-def index
+	def index
 
 	if current_user
 		@wallet = current_user.wallets.build
@@ -20,14 +18,4 @@ private
 	  def wallet_params
 	    params.require(:wallet).permit(:abbr, :name, :quantity, :paid, :current_value, :profit_loss)
 	  end
-
-
-
-
-
-
-
-
-
-
 end

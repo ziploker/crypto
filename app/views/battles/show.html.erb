@@ -1,0 +1,55 @@
+<div id='battle_show_container'>
+
+	<div id='battle_show'>
+		<h1> YOU vs ...waiting for player </h1>
+	</div>
+
+	<div id='youvs'>
+
+		total: $10,000
+
+		<div id='go_to_market'>
+			<h1>Market</h1>
+
+		</div>
+
+	</div>
+
+
+
+	<% if @battle.users.count >= 2 %>
+	
+		<h1>match Started</h1>
+	<% else %>
+
+
+
+
+	<div id='vsyou'>
+		<h1>gfjhfjgfj</h1>
+		<div id='join_battle'>join</div>
+	</div>
+
+
+	
+
+	<%= form_for @battle do |f| %>
+
+		<%= f.check_box :status %> <-- status </h4><br>
+		<%= f.text_field :finish, value: Time.now + 10.days  %>
+		<%= f.number_field :players, value: '2'%>
+
+
+		<H1>User ID = <%= @user.id %></H1>
+		<H1>User email = <%= @user.email %></H1>
+		
+	<% end %>
+
+
+
+
+
+	<% end %>
+
+
+</div>

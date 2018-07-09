@@ -1,3 +1,4 @@
+
 <div id="show_table_div">
  
   <table id="show_table">
@@ -33,8 +34,8 @@
         <td><%= @current %> </td>
         
 
-        <td><%= link_to 'show', show_path(wallet) %></td>
-        <td><%= link_to 'edit', edit_path(wallet) %></td>
+        <td><%= link_to 'show', wallet_path(wallet.id) %></td>
+        <td><%= link_to 'edit', edit_wallet_path(wallet.id) %></td>
         
       </tr>
     <% end %>

@@ -1,0 +1,57 @@
+// Place all the styles related to the Battles controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+#single_div{
+
+	width: 200px;
+	height: 200px;
+	background: #f3d4cc;
+	cursor: pointer;
+}
+
+#tourny{
+
+	width: 200px;
+	height: 200px;
+	background: #d411c6;
+}
+
+
+//#SHOW
+
+#battle_show_container{
+
+	display: grid;
+	grid-template-columns: repeat(12, 1fr);
+	grid-gap: 1em;
+}
+
+#battle_show{
+
+	grid-column: 2 / 12;
+	background: pink;
+	text-align: center;
+
+	
+}
+
+#youvs{
+
+	grid-column: 2 / 7;
+	background: blue;
+}
+
+#youvs{
+
+	
+	background: red;
+
+
+}
+
+#join_battle{
+
+	width: 50px;
+	height: 50px;
+	background: pink;
+}

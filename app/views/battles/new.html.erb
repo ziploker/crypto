@@ -1,0 +1,17 @@
+<%= form_for @battle do |f| %>
+	
+	<h4><%= f.check_box :status %> <-- status </h4><br>
+	<%= f.text_field :finish, value: Time.now + 10.days  %>
+	<%= f.number_field :players %>
+
+
+	<H1>User ID = <%= @user.id %></H1>
+	<H1>User email = <%= @user.email %></H1>
+	
+
+
+
+	
+	
+
+	<%= f.submit "start", id: "single_button"  %>
