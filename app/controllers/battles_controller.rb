@@ -3,46 +3,65 @@ class BattlesController < ApplicationController
 	
 def new
 	
-	
-	
-	
+	@battle = Battle.new
 end		
+
 
 def create
 	
-	if current_user	
+	if user_signed_in?	
 		@battle = current_user.battles.build(battle_params)
 		@battle.users << current_user
 
-		
-	
-		puts "create it next "+@battle.inspect
-		#@battle.users << @user
 		if @battle.save
+			puts "saved!!"
 			redirect_to(battle_path(@battle))
 		end
+	
+
 	else
 		redirect_to(new_user_registration_path)
-
+		puts "not "
 	end
-	
-	
-
 end	
+
+
 
 def index
-	if current_user
+	if user_signed_in?
 		@user = current_user
-	end
-	@battle = Battle.all
+		@myBattles = @user.battles
 
+	end
+	
+	
+	@openBattles = Battle.where(players: 1)
+	@battles = Battle.all
+	
 end	
 
-def show
-	@user = current_user
-	@battle = Battle.find(params[:id])
 
+
+
+def show
+	
+	if Battle.where(id: params[:id]).exists?
+	 	
+	 	if user_signed_in?
+			@user = current_user
+			@battle = Battle.find(params[:id])
+			
+			#if flagger is true, user belongs to battle 
+			#master_key = @user.battles.where(id: @battle.id )
+		end
+			
+	else
+		
+		redirect_to battles_path
+	end
 end
+
+
 
 def update
 	@user = current_user
@@ -78,7 +97,7 @@ end
 
 private
 	  def battle_params
-	    params.require(:battle).permit(:status, :finish, :players)
+	    params.require(:battle).permit(:status, :finish, :players, :total_players)
 	  end
 
 

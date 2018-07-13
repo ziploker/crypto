@@ -1,0 +1,9 @@
+<H1> Create battle </h1>
+
+<%= form_with model: @newBattle, local: true do |f| %>
+	<%= select("battle", "total_players",  [ 1, 5, 10] ) %>
+  	<%= f.check_box :status, :value => true %> <-- status </h4><br>
+	<%= f.text_field :finish, value: Time.now + 10.days  %>
+	<%= f.number_field :players, :value => 1 %>
+  	<%= f.submit %>
+<% end %>

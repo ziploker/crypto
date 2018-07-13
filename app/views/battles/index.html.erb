@@ -1,14 +1,79 @@
-<h1> battle view </h1>
+<% if user_signed_in? %>
+	<p>current user = <%= @user.email[/[^@]+/] %></p>
+	<p>current userID = <%= @user.id %></p>	
+<% end %>
 
-<%= @battle.each do |b| %>
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'join')">Join Battle</button>
+  
+  <button id='create_battle_button' class="tablinks" onclick="openTab(event, 'create')">Create Battle</button>
+  
+  <button class="tablinks" onclick="openTab(event, 'active')">My Battles</button>
+
+  <button class="tablinks" onclick="openTab(event, 'admin')">Alejo</button>
+
+</div>
+
+
+<div id="join" class="tabcontent">
+  
+  <% if @openBattles.any? %>
+
+
+	  <% @openBattles.each do |b| %>
+	  	<div class='open_battle'>
+	  		
+	  		<p> ...<%= b.users[0].email[/[^@]+/] %> wants to battle 
+			<%= button_to "Join Battle", battle_path(b), :method => "get" %>
+	  		</p>
+			<p>battle id: <%= b.id %></p>
+			<p># of players: <%= b.players %></p>
+			<p>---------------</p>
+			
+
+	  	</div>
+	  	<% end %>
+  	<% else %>
+
+  		<p> No Open Battles. Create New Battle 
+  			<button class="tablinks" onclick="openTab2('create')">Create Battle</button>
+		</p>
+	<% end %>
+
+
+
+
+
+</div>
+
+<div id="create" class="tabcontent">
+  <%= render 'create_form' %>
+</div>
+
+
+<div id="active" class="tabcontent">
+ 
+  	<% if user_signed_in? %>
+  		<%= render 'my_battles_tab' %>
+  	<% else %>
+  		<h1> Log In </h1>
+	<%end %>
+
+
+<div id="admin" class="tabcontent">
+ 
+  <p><% @battles.each do |b| %>
 
 	<h1> battle ID: <%= b.id %> </h1>
 	<h2> players: <%= b.users.count %></h2>
-	<h3> <%= link_to "join battle", battle_path(b.id) %> </h3>
-
+	<% if b.users.count <= 1 %>
+		<h3> <%= link_to "join battle", battle_path(b.id) %> </h3>
+	<% else %>
+		<h3> <%= link_to "view battle", battle_path(b.id) %> </h3>
+	<%end%>
 	
 
-			<%= b.users.each do |u| %>
+			<% b.users.each do |u| %>
 				<h1>user ID: <%= u.id %></h1>
 				<h1>user email: <%= u.email %></h1>
 
@@ -18,32 +83,34 @@
 
 
 
+</p>
+</div>
 
 
 
 
 
 
-<%= form_for Battle.new do |f| %>
-	
-	<h4><%= f.check_box :status, value: true %> <-- status </h4><br>
-	<%= f.text_field :finish, value: Time.now + 10.days  %>
-	<%= f.number_field :players, value: 1 %>
-
-
-	<% if current_user %>
-	<H1>User ID = <%= @user.id %></H1>
-	<H1>User email = <%= @user.email %></H1>
-	<% end %>
-	
 
 
 
-	
-	
 
-	<%= f.submit "start", id: "single_button"  %>
-	<div id="single_div"> 1 vs 1 </div>
-	<div id="tourny"> tournament </div>
-<% end %>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
