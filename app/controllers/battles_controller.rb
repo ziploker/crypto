@@ -10,8 +10,10 @@ end
 def create
 	
 	if user_signed_in?	
+		
 		@battle = current_user.battles.build(battle_params)
 		@battle.users << current_user
+		
 
 		if @battle.save
 			puts "saved!!"
@@ -97,7 +99,7 @@ end
 
 private
 	  def battle_params
-	    params.require(:battle).permit(:status, :finish, :players, :total_players)
+	    params.require(:battle).permit(:status, :finish, :players, :total_players, :total)
 	  end
 
 

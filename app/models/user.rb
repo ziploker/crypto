@@ -5,7 +5,9 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable
  
  
- has_many :wallets
+ 
  has_many :rooms
  has_many :battles, through: :rooms
-end
+
+ 
+ end

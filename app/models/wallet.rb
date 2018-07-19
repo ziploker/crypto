@@ -1,9 +1,9 @@
 class Wallet < ApplicationRecord
 
-	validates :abbr, presence: true,
-                    length: { minimum: 3 }
+	has_and_belongs_to_many :rooms
 
-    belongs_to :user
+    
+    
 
 
 end

@@ -1,7 +1,12 @@
 <div id='battle_show_container'>
 
 	<div id='battle_show'>
-		<h1> YOU vs ...waiting for player </h1>
+		<% if @battle.users.count >= 2 %>
+
+			<h1> <%= @battle.users[0].email[/[^@]+/]%> vs <%=@battle.users[1].email[/[^@]+/] %> </h1>
+		<%else %>
+			<h1> YOU vs ...waiting for player </h1>
+		<% end %>
 		<h4> <%= @battle.id %></h4>
 	</div>
 
@@ -11,6 +16,9 @@
 
 		<div id='go_to_market'>
 			<h1>Market</h1>
+			<p> room = <%= @battle.rooms.where(user_id: current_user.id)[0].wallets[0].abbr %> </p>
+
+			<p> room = <%= @battle.rooms.where(user_id: current_user.id)[0].wallets[1].abbr %> </p>
 
 		</div>
 

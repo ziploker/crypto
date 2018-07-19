@@ -5,5 +5,6 @@
   	<%= f.check_box :status, :value => true %> <-- status </h4><br>
 	<%= f.text_field :finish, value: Time.now + 10.days  %>
 	<%= f.number_field :players, :value => 1 %>
+	<%= f.number_field :total, :value => 10000 %>
   	<%= f.submit %>
 <% end %>
