@@ -4,74 +4,74 @@ function numberWithCommas(number) {
     return parts.join(".");
 }
 
-
+var howmuch = 0;
 $( document ).ready( function() {
 	
 	 
+	var count = $('#show_table tr').slice(1).length;
+	//alert("count = " +count);
+	$('#show_table tr').slice(1).each(function (i, row){
+	    var sym = $(this).find("td:eq(1)").text();
+	    var id = $(this).find("td:eq(0)").text();
+		var num = $(this).find("td:eq(4)").text().replace("$", "").replace(",", "");
+		
+		var newnum = parseFloat(num);
+		var q = $(this).find("td:eq(3)").text();
+		var quantity = parseFloat(q);
 
-	 $('#show_table tr').each(function (i, row)
-            {
-                var sym = $(this).find("td:eq(1)").text();
-                var id = $(this).find("td:eq(0)").text();
-
-
-
-                
-                
-
-            	var num = $(this).find("td:eq(4)").text().replace("$", "").replace(",", "");
-            	
-            	var newnum = parseFloat(num);
-            	var q = $(this).find("td:eq(3)").text();
-            	var quantity = parseFloat(q);
-
-            	var currentPrice = whatsPrice(sym, id, newnum, quantity);
-
-            	
-
-            	
-
-
-
-
+		var currentPrice = whatsPrice(sym, id, newnum, quantity);
+		
+		//var total = total + parseFloat(currentPrice); 
+		//alert("i = " + i + "and ID is = " + id)
+		if (i+1 === count) {
+			//showTotal(howmuch);
+			
+			
+			// this will be executed at the end of the loop
+		}
+		
+		//myTotal = currentPrice * quantity
 	});
 
 
+	function whatsPrice(sym, id, newnum, quantity){
 
-
- 	function whatsPrice(sym, id, newnum, quantity){
-
-
+		
 		$.getJSON('https://min-api.cryptocompare.com/data/price?fsym='+sym+'&tsyms=USD', function(json){
 
 			
 			var currentnum = parseFloat(json.USD);
 			currentnum = currentnum.toFixed(2);
 			
+			//alert(quantity + " * "  +currentnum + " = " + parseFloat(quantity) * parseFloat(currentnum));
+			var sum = parseFloat(quantity) * parseFloat(currentnum);
 			
-			
-
+			howmuch = howmuch + sum;
+			//alert(sum +"+"+howmuch );
 			var profit = (currentnum - newnum);
 			profit = profit.toFixed(2);
 
 			currentnum = numberWithCommas(currentnum);
+			
 
 
-			var ttt = newnum * quantity;
-			alert(ttt);
-
+			$("#myTotal").empty().append("total = " + parseFloat(howmuch).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
 			$("#"+id+"_current").append("$"+currentnum);
 			
+			$("#"+id+"_current_total").append("$"+parseFloat(sum).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+
 			$("#"+id+"_profit").append(profit);
 
+			
 		});
-
+	
 	};
 
-
-
-
-
+	
+	function showTotal(total){
+		$("#myTotal").append("total = " + total);
+	
+	};
 
 
 });

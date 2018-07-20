@@ -1,7 +1,12 @@
 class WalletsController < ApplicationController
+  
+  @roomNum = 0
+
   def index
-    #@mywallet = Wallet.all
-    #@mywallet = Wallet.find(params[:user_id = @current])
+    @roomnumber = session[:room]
+    @room = Room.find(session[:room])
+    @mywallet = @room.wallets
+    
     @current = current_user.id
     @wal = Wallet.where("user_id =?", current_user.id)
   end
@@ -15,10 +20,16 @@ class WalletsController < ApplicationController
   end
 
   def create
-    @wallet = current_user.wallets.build(wallet_params)
+    @room = Room.find(params[:wallet][:room])
+    puts "room id #{params[:wallet][:room]}"
+    puts "room params =  #{@room.inspect}"
+
+    @wallet = Wallet.create(wallet_params)
+    @wallet.rooms << @room
       #render plain: params[:porfolio].inspect
       if @wallet.save
-        redirect_to(wallets_path)
+        session[:room] = @room.id
+       redirect_to(wallets_path, data: "wtf")
     else
       render 'error'
     end
@@ -32,7 +43,8 @@ class WalletsController < ApplicationController
     @wallet = Wallet.find(params[:id])
  
       if @wallet.update(wallet_params)
-        redirect_to '/porfolio'
+        session[:room] = "wtf720"
+        redirect_to(wallets_path, data: "wtffff")
     else
       render 'error'
     end

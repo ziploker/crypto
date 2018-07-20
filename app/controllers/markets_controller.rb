@@ -2,8 +2,19 @@ class MarketsController < ApplicationController
 
 	def index
 
-	if current_user
-		@wallet = current_user.wallets.build
+	if user_signed_in?
+		@room = Room.find(params[:room])
+		@authUserId = @room.user_id
+		if @authUserId == current_user.id
+			@pass = "go"
+		
+
+		else
+			@pass = "stop"
+
+		end
+		@wallet = Wallet.new
+	
 	else
 		@wallet = Wallet.all
 	end

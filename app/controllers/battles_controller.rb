@@ -11,6 +11,7 @@ def create
 	
 	if user_signed_in?	
 		
+		puts battle_params.inspect
 		@battle = current_user.battles.build(battle_params)
 		@battle.users << current_user
 		
@@ -21,7 +22,7 @@ def create
 		end
 	
 
-	else
+else
 		redirect_to(new_user_registration_path)
 		puts "not "
 	end
@@ -39,6 +40,7 @@ def index
 	
 	@openBattles = Battle.where(players: 1)
 	@battles = Battle.all
+	@battle = Battle.new
 	
 end	
 
@@ -56,7 +58,7 @@ def show
 			#if flagger is true, user belongs to battle 
 			#master_key = @user.battles.where(id: @battle.id )
 		end
-			
+		@allUsers = User.all
 	else
 		
 		redirect_to battles_path
