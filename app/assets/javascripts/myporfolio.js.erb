@@ -5,11 +5,15 @@ function numberWithCommas(number) {
 }
 
 var howmuch = 0;
+var symbols = [];
+var howmanytimes = 0;
+
+
 $( document ).ready( function() {
 	
 	 
 	var count = $('#show_table tr').slice(1).length;
-	//alert("count = " +count);
+	
 	$('#show_table tr').slice(1).each(function (i, row){
 	    var sym = $(this).find("td:eq(1)").text();
 	    var id = $(this).find("td:eq(0)").text();
@@ -19,25 +23,26 @@ $( document ).ready( function() {
 		var q = $(this).find("td:eq(3)").text();
 		var quantity = parseFloat(q);
 
-		var currentPrice = whatsPrice(sym, id, newnum, quantity);
 		
-		//var total = total + parseFloat(currentPrice); 
-		//alert("i = " + i + "and ID is = " + id)
+		symbols.push(id,sym);
+		
+		whatsPrice(sym, id, newnum, quantity, count);
+
 		if (i+1 === count) {
-			//showTotal(howmuch);
+
 			
-			
-			// this will be executed at the end of the loop
-		}
-		
-		//myTotal = currentPrice * quantity
+		};
 	});
 
 
-	function whatsPrice(sym, id, newnum, quantity){
+	
 
-		
-		$.getJSON('https://min-api.cryptocompare.com/data/price?fsym='+sym+'&tsyms=USD', function(json){
+	function whatsPrice(tag, id, newnum, quantity, count){
+
+		$.getJSON('https://min-api.cryptocompare.com/data/price?fsym='+tag+'&tsyms=USD', function(json){
+
+
+			console.log(count);
 
 			
 			var currentnum = parseFloat(json.USD);
@@ -53,25 +58,67 @@ $( document ).ready( function() {
 
 			currentnum = numberWithCommas(currentnum);
 			
+			//alert(id+ " ==> "+currentnum);
 
-
-			$("#myTotal").empty().append("total = " + parseFloat(howmuch).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+			//$("#myTotal").empty().append("total = " + parseFloat(howmuch).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
 			$("#"+id+"_current").append("$"+currentnum);
 			
 			$("#"+id+"_current_total").append("$"+parseFloat(sum).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
 
 			$("#"+id+"_profit").append(profit);
-
 			
+		}).done(function(){
+			howmanytimes += 1;
+			if (howmanytimes == count){
+				$("#myTotal").append("total = " + parseFloat(howmuch).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+				//alert( $("#roomnumberToSave").text().trim() );
+
+				$.ajax({
+
+				url: '/room/'+$("#roomnumberToSave").text().trim(),
+				//datatype: 'json',
+				type: 'PATCH',
+				data: {"total": howmuch},
+				
+				success: function(data) {
+					//var data = JSON.parse(data);
+					alert(data);
+				},
+
+
+				failure: function() {
+
+					alert("unsuccesful");
+				}
+
+
+			});
+
+
+
+
+
+
+			};
 		});
 	
 	};
 
 	
+	
+
 	function showTotal(total){
+		
 		$("#myTotal").append("total = " + total);
 	
 	};
+	
 
+	function getTotal(){
+
+		t = $("#myTotal").val().trim();
+		//alert("t " + t)
+		return t;
+	};
 
 });

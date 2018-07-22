@@ -14,6 +14,7 @@ def create
 		puts battle_params.inspect
 		@battle = current_user.battles.build(battle_params)
 		@battle.users << current_user
+		#@battle.rooms[0].balance = 10000
 		
 
 		if @battle.save
@@ -70,8 +71,10 @@ end
 def update
 	@user = current_user
 	@battle = Battle.find(params[:id])
+
 	flag = "off"
 	puts "pre " + flag
+
 	
 	if user_signed_in?
 		@battle.users.each do |u|
@@ -84,7 +87,12 @@ def update
 		if flag == "off"
 			@battle.update(battle_params)
 			@battle.users << @user
-			@battle.save
+			#S@battle.rooms[1].ballance = 100000
+
+			#@room = Room.where(battle_id: params[:id], user_id: current_user.id)
+			puts @room.inspect
+
+			
 			redirect_to battle_path(@battle)
 			puts "savit no dup"
 		else

@@ -20,6 +20,7 @@ class WalletsController < ApplicationController
   end
 
   def create
+    @totalPrice = 0
     @room = Room.find(params[:wallet][:room])
     puts "room id #{params[:wallet][:room]}"
     puts "room params =  #{@room.inspect}"
@@ -27,11 +28,51 @@ class WalletsController < ApplicationController
     @wallet = Wallet.create(wallet_params)
     @wallet.rooms << @room
       #render plain: params[:porfolio].inspect
+      
+    @paid = params[:wallet][:paid]
+    
+
+   
+    
+
+    @totalPrice = @paid.to_i * params[:wallet][:quantity].to_i
+    puts @room.balance
+
+    if @totalPrice <= 10000
+
+
+
+    
+
+
       if @wallet.save
         session[:room] = @room.id
-       redirect_to(wallets_path, data: "wtf")
+        redirect_to(wallets_path, data: "create")
+      else
+       
+        @existingWallet = Wallet.where(abbr: params[:wallet][:abbr] )
+
+        existingQuantity = @existingWallet[0].quantity.to_int
+        newQuantity = params[:wallet][:quantity]
+
+        puts "existingQuantity is "+existingQuantity.to_s 
+        puts "newQuantity is "+newQuantity.to_s
+
+        @totalQ = existingQuantity.to_i + newQuantity.to_i
+       
+        @existingWallet.update(quantity: @totalQ)
+
+        #totalQuantity = existingQuantity + newQuantity
+        #puts "new total quantity ="+totalQuantity
+
+        puts "elsrfgsdfsdfsdfsdf"   
+
+
+        redirect_to(wallets_path, data: "updatedededdit")
+      end
+
     else
-      render 'error'
+      puts "not enough"
     end
   end
 
@@ -43,7 +84,7 @@ class WalletsController < ApplicationController
     @wallet = Wallet.find(params[:id])
  
       if @wallet.update(wallet_params)
-        session[:room] = "wtf720"
+        
         redirect_to(wallets_path, data: "wtffff")
     else
       render 'error'
@@ -56,6 +97,14 @@ class WalletsController < ApplicationController
   def destroy
   end
 
+  def updateRoom
+     @room = Room.find(params[:id]) 
+     @room.total = (params[:total])
+     if @room.save;
+      puts "diddddddit";
+    end
+
+  end
 
 
   private
