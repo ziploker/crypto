@@ -1,7 +1,74 @@
-<p id="roomnumberToSave"> <%= @roomnumber %> </p>
+<p id="roomnumberToSave"> room number = <%= @roomnumber %> </p>
+
 <div id="show_table_div">
  
-  <table id="show_table">
+  <table id="show_table_compact">
+    <tr>
+      
+      <th>abbr</th>
+      <th>name</th>
+      <th>quantity</th>
+      
+      
+      <th>total value</th>
+      <th>profit/loss</th>
+      
+    </tr>
+    
+    
+    
+
+    <% @names.each do |name| %>
+    <% @theTotal = 0 %>
+
+      <% @oneAtATime = @mywallet.where(name: name) %>
+
+        <% @oneAtATime.each do |r| %>
+          <% @theTotal += r.quantity %>
+
+        <% end %>
+
+    
+
+
+
+
+
+
+      
+        
+        <tr>  
+          
+          <td><%= @oneAtATime[0].abbr %></td>
+          <td><%= name %></td>
+          <td ><%= @theTotal %></td>
+          
+          
+          <td><%= @oneAtATime[0].current_value %></td>
+          <td><%= @oneAtATime[0].profit_loss %></td>
+
+         
+          
+         
+
+         
+          
+        </tr>
+        
+     
+
+    
+<% end %>
+
+
+
+
+
+
+
+
+
+<table id="show_table">
     <tr>
       <th>ID</th>
       <th>abbr</th>
@@ -11,15 +78,19 @@
       <th>current value</th>
       <th>total value</th>
       <th>profit/loss</th>
-      
-     
       <th></th>
       <th></th>
     </tr>
-   <% @totals = 0 %>
-   <% @times = 0 %>
+
+
+
+
+
+
+
     <% @mywallet.each do |wallet| %>
-      <tr>
+      
+      <tr>  
         <td><%= wallet.id %></td>
         <td><%= wallet.abbr %></td>
         <td><%= wallet.name %></td>
@@ -44,6 +115,69 @@
       </tr>
       
     <% end %>
+    
+    
+
+
+
+
+
+    
+    
+
+    
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+
+
+      
+
+
+
+
+
+
+
+
+
+
+
+    <p> check for dups on <%= @mywallet.count %> records.</p>
+    
+   
+    
+     
+      
+      
+      
+     
+
+
     
 
   </table>

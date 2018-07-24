@@ -12,7 +12,13 @@
 
 	<div id='youvs'>
 
-		total: $10,000
+		<% if @room.exists? %>
+		total: <%= @room[0].balance %>
+		room size is = <%=@room.exists?%>
+		<% else %>
+		total: canned total
+		room size is = <%=@room.exists?%>
+		<% end %>
 
 		<div id='go_to_market'>
 			<h1>Market</h1>

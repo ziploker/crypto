@@ -32,7 +32,7 @@ ActiveRecord::Schema.define(version: 2018_07_22_204403) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "total"
-    t.integer "balance", default: 10001
+    t.integer "balance", default: 9000
     t.index ["battle_id"], name: "index_rooms_on_battle_id"
     t.index ["user_id"], name: "index_rooms_on_user_id"
   end

@@ -46,7 +46,7 @@ $( document ).ready( function() {
 
 			
 			var currentnum = parseFloat(json.USD);
-			currentnum = currentnum.toFixed(2);
+			currentNumUncut = currentnum.toFixed(2);
 			
 			//alert(quantity + " * "  +currentnum + " = " + parseFloat(quantity) * parseFloat(currentnum));
 			var sum = parseFloat(quantity) * parseFloat(currentnum);
@@ -56,7 +56,7 @@ $( document ).ready( function() {
 			var profit = (currentnum - newnum);
 			profit = profit.toFixed(2);
 
-			currentnum = numberWithCommas(currentnum);
+			currentnum = numberWithCommas(currentNumUncut);
 			
 			//alert(id+ " ==> "+currentnum);
 
@@ -68,29 +68,24 @@ $( document ).ready( function() {
 			$("#"+id+"_profit").append(profit);
 			
 		}).done(function(){
-			howmanytimes += 1;
-			if (howmanytimes == count){
-				$("#myTotal").append("total = " + parseFloat(howmuch).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
-				//alert( $("#roomnumberToSave").text().trim() );
+			
+			$.ajax({
 
-				$.ajax({
-
-				url: '/room/'+$("#roomnumberToSave").text().trim(),
+				url: '/wallets/'+id,
 				//datatype: 'json',
 				type: 'PATCH',
-				data: {"total": howmuch},
+				data: {"current_value": currentNumUncut},
 				
 				success: function(data) {
 					//var data = JSON.parse(data);
-					alert(data);
+					//alert(data);
 				},
 
 
 				failure: function() {
 
-					alert("unsuccesful");
+					//alert("unsuccesful");
 				}
-
 
 			});
 
@@ -98,6 +93,12 @@ $( document ).ready( function() {
 
 
 
+
+
+			howmanytimes += 1;
+			if (howmanytimes == count){
+				$("#myTotal").append("total = " + parseFloat(howmuch).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+				//alert( $("#roomnumberToSave").text().trim() );
 
 			};
 		});

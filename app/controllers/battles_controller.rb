@@ -55,6 +55,7 @@ def show
 	 	if user_signed_in?
 			@user = current_user
 			@battle = Battle.find(params[:id])
+			@room = Room.where(user_id: current_user.id, battle_id: @battle.id)
 			
 			#if flagger is true, user belongs to battle 
 			#master_key = @user.battles.where(id: @battle.id )

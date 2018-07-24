@@ -3,12 +3,29 @@ class WalletsController < ApplicationController
   @roomNum = 0
 
   def index
+    @totals = 0
+    @times = 0
+    @theTotal = 0
     @roomnumber = session[:room]
     @room = Room.find(session[:room])
     @mywallet = @room.wallets
     
+
+
+    
     @current = current_user.id
     @wal = Wallet.where("user_id =?", current_user.id)
+
+
+    @names = []
+
+    @mywallet.each do |record|
+
+      @names.push(record.name)
+
+    end
+    
+    @names = @names.uniq
   end
 
   def show
@@ -20,52 +37,41 @@ class WalletsController < ApplicationController
   end
 
   def create
-    @totalPrice = 0
+    
     @room = Room.find(params[:wallet][:room])
-    puts "room id #{params[:wallet][:room]}"
-    puts "room params =  #{@room.inspect}"
-
+   
     @wallet = Wallet.create(wallet_params)
     @wallet.rooms << @room
-      #render plain: params[:porfolio].inspect
+    #render plain: params[:porfolio].inspect
       
-    @paid = params[:wallet][:paid]
+    paid = params[:wallet][:paid]
+    quantity = params[:wallet][:quantity]
     
-
-   
-    
-
-    @totalPrice = @paid.to_i * params[:wallet][:quantity].to_i
-    puts @room.balance
-
-    if @totalPrice <= 10000
-
-
+    totalPrice = paid.to_i * quantity.to_i
 
     
+    if totalPrice <= @room.balance
+      
+      newBalance = @room.balance - totalPrice
+      @room.balance = newBalance
+      @room.save
 
-
+      
       if @wallet.save
         session[:room] = @room.id
-        redirect_to(wallets_path, data: "create")
+        redirect_to(wallets_path, data: "updatedededdit")
       else
        
-        @existingWallet = Wallet.where(abbr: params[:wallet][:abbr] )
+        
 
-        existingQuantity = @existingWallet[0].quantity.to_int
-        newQuantity = params[:wallet][:quantity]
-
-        puts "existingQuantity is "+existingQuantity.to_s 
-        puts "newQuantity is "+newQuantity.to_s
-
-        @totalQ = existingQuantity.to_i + newQuantity.to_i
+      
        
-        @existingWallet.update(quantity: @totalQ)
 
-        #totalQuantity = existingQuantity + newQuantity
-        #puts "new total quantity ="+totalQuantity
+        
 
-        puts "elsrfgsdfsdfsdfsdf"   
+       
+       
+        
 
 
         redirect_to(wallets_path, data: "updatedededdit")
@@ -82,10 +88,12 @@ class WalletsController < ApplicationController
 
   def update
     @wallet = Wallet.find(params[:id])
+
+    @cv = params[:current_value]
  
-      if @wallet.update(wallet_params)
+      if @wallet.update(current_value: [:wallet][params[:current_value].to_i])
         
-        redirect_to(wallets_path, data: "wtffff")
+        puts "saved them all"
     else
       render 'error'
     end
@@ -98,17 +106,45 @@ class WalletsController < ApplicationController
   end
 
   def updateRoom
-     @room = Room.find(params[:id]) 
-     @room.total = (params[:total])
-     if @room.save;
-      puts "diddddddit";
-    end
+    @room = Room.find(params[:wallet][:room])
+   
+    paid = params[:wallet][:paid]
+    quantity = params[:wallet][:quantity]
+    
+    totalPrice = paid.to_i * quantity.to_i
+     
+    if totalPrice <= @room.balance
+      
+      newBalance = @room.balance - totalPrice
+      @room.balance = newBalance
+      @room.save
 
+      
+      if @wallet.save
+        session[:room] = @room.id
+        redirect_to(wallets_path, data: "updatedededdit")
+      else
+       
+        
+
+      
+       
+
+        
+
+       
+       
+        
+
+
+        redirect_to(wallets_path, data: "updatedededdit")
+      end
+    end
   end
 
 
   private
     def wallet_params
-      params.require(:wallet).permit(:abbr, :name, :quantity, :paid, :current_value, :profit_loss, :url)
+      params.require(:wallet).permit(:abbr, :name, :quantity, :paid, :current_value, :profit_loss, :url, :balance, :total)
     end
 end
