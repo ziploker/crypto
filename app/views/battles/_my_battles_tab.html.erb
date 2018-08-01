@@ -2,10 +2,18 @@
 
 	<h1> battle ID: <%= b.id %> </h1>
 	<h2> players: <%= b.users.count %></h2>
+	
+
+
+	
+	
 	<% if b.users.count <= 1 %>
 		<h3> <%= link_to "join battle", battle_path(b.id) %> </h3>
 	<% else %>
 		<h3> <%= link_to "view battle", battle_path(b.id) %> </h3>
+		
+
+
 	<%end%>
 	
 

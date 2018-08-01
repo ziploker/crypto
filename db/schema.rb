@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_22_204403) do
+ActiveRecord::Schema.define(version: 2018_07_29_145459) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,8 +31,12 @@ ActiveRecord::Schema.define(version: 2018_07_22_204403) do
     t.datetime "room_finish"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "total"
-    t.integer "balance", default: 9000
+    t.decimal "invested"
+    t.decimal "bank", default: "10000.0"
+    t.decimal "total"
+    t.decimal "enemy_invested"
+    t.decimal "enemy_bank", default: "10000.0"
+    t.decimal "enemy_total"
     t.index ["battle_id"], name: "index_rooms_on_battle_id"
     t.index ["user_id"], name: "index_rooms_on_user_id"
   end

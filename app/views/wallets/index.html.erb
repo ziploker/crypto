@@ -1,64 +1,59 @@
-<p id="roomnumberToSave"> room number = <%= @roomnumber %> </p>
+
+<button class='refresh' onclick="refresh()">REFRESH</button><br>
+
+mywallet = <%=@names.inspect%> <br>
+
+enemywallet = <%= @enemynombres.inspect %>
+
+
+
+<h1><%=puts @enemywallet.inspect+ "  rtrtrtrtr"%></h1>
+
+
+<h3 id="roomnumberToSave"> <%= @roomnumber %> </h3>
+<h3 id="enemyroomnumberToSave"> <%= @enemyroomnumber %> </h3>
+
+<P><%= @current_user.inspect %> </P>
+<p><%= @room.inspect %></p>
 
 <div id="show_table_div">
  
   <table id="show_table_compact">
     <tr>
-      
       <th>abbr</th>
       <th>name</th>
       <th>quantity</th>
-      
-      
+      <th>current price</th>
       <th>total value</th>
+      <th>total paid</th>
       <th>profit/loss</th>
-      
     </tr>
     
-    
-    
-
     <% @names.each do |name| %>
     <% @theTotal = 0 %>
+    <% @totalPaid = 0 %>
+    <% @avargeProfit = 0 %>
+    <% @oneAtATime = @mywallet.where(name: name) %>
 
-      <% @oneAtATime = @mywallet.where(name: name) %>
+      <% @oneAtATime.each do |r| %>
+        <% @theTotal += r.quantity %>
+        <% @totalPaid += r.quantity * r.paid %>
+        
+      <% end %>
 
-        <% @oneAtATime.each do |r| %>
-          <% @theTotal += r.quantity %>
-
-        <% end %>
-
-    
-
-
-
-
-
-
+      <tr>  
+        
+        <td><%= @oneAtATime[0].abbr %></td>
+        <td><%= name %></td>
+        <td ><%= @theTotal %></td>
+        <td id="<%= name %>_compact_current_price"></td>
+        <td id="<%= name %>_compact_total_value"></td>
+        <td id="<%= name %>_compact_total_paid">$ <%= number_with_precision(@totalPaid, :precision => 2, :delimiter => ',') %></td>
+        <td id="<%= name %>_compact_profit"></td>
       
-        
-        <tr>  
-          
-          <td><%= @oneAtATime[0].abbr %></td>
-          <td><%= name %></td>
-          <td ><%= @theTotal %></td>
-          
-          
-          <td><%= @oneAtATime[0].current_value %></td>
-          <td><%= @oneAtATime[0].profit_loss %></td>
-
-         
-          
-         
-
-         
-          
-        </tr>
-        
-     
-
-    
-<% end %>
+      </tr>
+      
+    <% end %>
 
 
 
@@ -71,41 +66,37 @@
 <table id="show_table">
     <tr>
       <th>ID</th>
+      <th>date</th>
       <th>abbr</th>
       <th>name</th>
       <th>quantity</th>
-      <th>paid</th>
-      <th>current value</th>
+      <th>original price</th>
+      <th>current price</th>
       <th>total value</th>
       <th>profit/loss</th>
       <th></th>
       <th></th>
     </tr>
 
-
-
-
-
-
-
     <% @mywallet.each do |wallet| %>
       
       <tr>  
         <td><%= wallet.id %></td>
+        <td><%= wallet.created_at.strftime("%b/%e/%Y") %></td>
         <td><%= wallet.abbr %></td>
         <td><%= wallet.name %></td>
         <td id="<%=wallet.id%>_quantity"><%= wallet.quantity %></td>
         
-        <td id="<%=wallet.id%>_paid"><%= number_to_currency wallet.paid %></td>
+        <td id="<%=wallet.id%>_paid"><%= "$ "+number_with_precision(wallet.paid, :precision => 2, :delimiter => ',') %></td>
         
-        <td id="<%=wallet.id%>_current"><%= number_to_currency wallet.current_value %></td>
+        <td id="<%=wallet.id%>_current_price"></td>
 
-        <td id="<%=wallet.id%>_current_total"><%= number_to_currency wallet.total %></td>
-
-
+        <td id="<%=wallet.id%>_total_value"></td>
 
 
-        <td id="<%=wallet.id%>_profit"><%= number_to_currency wallet.profit_loss %></td>
+
+
+        <td id="<%=wallet.id%>_profit"></td>
         
        
 
@@ -115,73 +106,150 @@
       </tr>
       
     <% end %>
+    <td><%= link_to 'Battle Summary', battle_path(@room.battle_id) %></td>
     
+<p> check for dups on <%= @mywallet.count %> records.</p>
     
-
-
-
-
-
-    
-    
-
-    
-
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      
-
-
-      
-
-
-
-
-
-
-
-
-
-
-
-    <p> check for dups on <%= @mywallet.count %> records.</p>
-    
-   
-    
-     
-      
-      
-      
-     
-
-
-    
-
-  </table>
+</table>
 
   <div id='myTotal'></div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h3 id="enemyroomnumberToSave"> <%= session[:enemyroom] %> </h3>
+<P><%= @enemy.inspect %> </P>
+<p><%= @enemyroom.inspect %></p>
+
+<div id="enemy_show_table_div">
+ 
+  <table id="enemy_show_table_compact">
+    <tr>
+      <th>abbr</th>
+      <th>name</th>
+      <th>quantity</th>
+      <th>current price</th>
+      <th>total value</th>
+      <th>total paid</th>
+      <th>profit/loss</th>
+    </tr>
+    
+    <% @enemynombres.each do |value| %>
+    <% puts "zzzzz im in "+ @enemynombres.inspect %>
+    <% @theTotal = 0 %>
+    <% @totalPaid = 0 %>
+    <% @avargeProfit = 0 %>
+    <% @enemyoneAtATime = @enemywallet.where(name: value) %>
+      <% puts @enemynombres.inspect+ "yyyy "+ value + " y yy" %>
+      <% @enemyoneAtATime.each do |r| %>
+        <% @theTotal += r.quantity %>
+        <% @totalPaid += r.quantity * r.paid %>
+        
+      <% end %>
+
+      <tr>  
+        
+        <td><%= @enemyoneAtATime[0].abbr  %></td>
+        <td><%= value %></td>
+        <td ><%= @theTotal %></td>
+        <td id="<%= value %>_enemy_compact_current_price"></td>
+        <td id="<%= value %>_enemy_compact_total_value"></td>
+        <td id="<%= value %>_enemy_compact_total_paid">$ <%= number_with_precision(@totalPaid, :precision => 2, :delimiter => ',') %></td>
+        <td id="<%= value %>_enemy_compact_profit"></td>
+      
+      </tr>
+      
+    <% end %>
+
+
+
+
+
+
+
+
+
+<table id="enemy_show_table">
+    <tr>
+      <th>ID</th>
+      <th>date</th>
+      <th>abbr</th>
+      <th>name</th>
+      <th>quantity</th>
+      <th>original price</th>
+      <th>current price</th>
+      <th>total value</th>
+      <th>profit/loss</th>
+      <th></th>
+      <th></th>
+    </tr>
+
+    <% @enemywallet.each do |wallet| %>
+      
+      <tr>  
+        <td><%= wallet.id %></td>
+        <td><%= wallet.created_at.strftime("%b/%e/%Y") %></td>
+        <td><%= wallet.abbr %></td>
+        <td><%= wallet.name %></td>
+        <td id="<%=wallet.id%>_enemy_quantity"><%= wallet.quantity %></td>
+        
+        <td id="<%=wallet.id%>_enemy_paid"><%= "$ "+number_with_precision(wallet.paid, :precision => 2, :delimiter => ',') %></td>
+        
+        <td id="<%=wallet.id%>_enemy_current_price"></td>
+
+        <td id="<%=wallet.id%>_enemy_total_value"></td>
+
+
+
+
+        <td id="<%=wallet.id%>_enemy_profit"></td>
+        
+       
+
+        <td><%= link_to 'show', wallet_path(wallet.id) %></td>
+        <td><%= link_to 'edit', edit_wallet_path(wallet.id) %></td>
+        
+      </tr>
+      
+    <% end %>
+    <td><%= link_to 'Battle Summary', battle_path(@room.battle_id) %></td>
+    
+<p> check for dups on <%= @enemywallet.count %> records.</p>
+    
+</table>
+
+  <div id='enemy_myTotal'></div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

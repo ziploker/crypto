@@ -3,7 +3,7 @@ class MarketsController < ApplicationController
 	def index
 
 	if user_signed_in?
-		@room = Room.find(params[:room])
+		@room = Room.find(session[:room])
 		@authUserId = @room.user_id
 		if @authUserId == current_user.id
 			@pass = "go"

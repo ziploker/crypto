@@ -2,92 +2,136 @@ function numberWithCommas(number) {
     var parts = number.toString().split(".");
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     return parts.join(".");
-}
+};
+
 
 var howmuch = 0;
-var symbols = [];
+var enemyhowmuch = 0;
+
 var howmanytimes = 0;
+var enemyhowmanytimes = 0;
+
+
+
+
 
 
 $( document ).ready( function() {
 	
-	 
-	var count = $('#show_table tr').slice(1).length;
+
+
+
+
+
+
+	//gets number of rows to process for final loop check below
+	var count = $('#show_table_compact tr').slice(1).length;
 	
-	$('#show_table tr').slice(1).each(function (i, row){
-	    var sym = $(this).find("td:eq(1)").text();
-	    var id = $(this).find("td:eq(0)").text();
-		var num = $(this).find("td:eq(4)").text().replace("$", "").replace(",", "");
+	//creates compact table
+	$('#show_table_compact tr').slice(1).each(function (i, row){
 		
-		var newnum = parseFloat(num);
-		var q = $(this).find("td:eq(3)").text();
+		//gets values from compact table to do math later on	   
+	    var sym = $(this).find("td:eq(0)").text();
+	    var name = $(this).find("td:eq(1)").text();
+	    var q = $(this).find("td:eq(2)").text();
 		var quantity = parseFloat(q);
-
 		
-		symbols.push(id,sym);
-		
-		whatsPrice(sym, id, newnum, quantity, count);
+		//call whatsPrice to get latest prices
+		whatsPrice(sym, name, quantity, count);
 
+		//final loop
 		if (i+1 === count) {
 
-			
 		};
 	});
 
 
+
+
+
+
+	//gets number of rows to process for final loop check below
+	var enemycount = $('#enemy_show_table_compact tr').slice(1).length;
+	
+	//creates compact table
+	$('#enemy_show_table_compact tr').slice(1).each(function (i, row){
+		
+		//gets values from compact table to do math later on	   
+	    var sym = $(this).find("td:eq(0)").text();
+	    var name = $(this).find("td:eq(1)").text();
+	    var q = $(this).find("td:eq(2)").text();
+		var quantity = parseFloat(q);
+		
+		//call whatsPrice to get latest prices
+		enemyWhatsPrice(sym, name, quantity, enemycount);
+
+		//final loop
+		if (i+1 === enemycount) {
+
+		};
+	});
 	
 
-	function whatsPrice(tag, id, newnum, quantity, count){
+	function whatsPrice(sym, name, quantity, count){
 
-		$.getJSON('https://min-api.cryptocompare.com/data/price?fsym='+tag+'&tsyms=USD', function(json){
+		$.getJSON('https://min-api.cryptocompare.com/data/price?fsym='+sym+'&tsyms=USD', function(json){
 
-
-			console.log(count);
-
-			
-			var currentnum = parseFloat(json.USD);
-			currentNumUncut = currentnum.toFixed(2);
-			
-			//alert(quantity + " * "  +currentnum + " = " + parseFloat(quantity) * parseFloat(currentnum));
-			var sum = parseFloat(quantity) * parseFloat(currentnum);
+			var currentPrice = parseFloat(json.USD);
+			currentPriceUncut = currentPrice.toFixed(2);
+			var sum = parseFloat(quantity) * parseFloat(currentPrice);
 			
 			howmuch = howmuch + sum;
-			//alert(sum +"+"+howmuch );
-			var profit = (currentnum - newnum);
-			profit = profit.toFixed(2);
-
-			currentnum = numberWithCommas(currentNumUncut);
+			currentPrice = numberWithCommas(currentPriceUncut);
 			
-			//alert(id+ " ==> "+currentnum);
-
-			//$("#myTotal").empty().append("total = " + parseFloat(howmuch).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
-			$("#"+id+"_current").append("$"+currentnum);
-			
-			$("#"+id+"_current_total").append("$"+parseFloat(sum).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
-
-			$("#"+id+"_profit").append(profit);
+			///apply values to compact table
+			$("#"+name+"_compact_current_price").append("$ "+currentPrice);
+			$("#"+name+"_compact_total_value").append("$ "+parseFloat(sum).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+			$("#"+name+"_compact_profit").append( "$ "+numberWithCommas(  ((parseFloat( $("#"+name+"_compact_total_value").text().replace("$", "").replace(",", "")).toFixed(2) -  parseFloat($("#"+name+"_compact_total_paid").text().replace("$", "").replace(",", "")) )).toFixed(2) )  );
 			
 		}).done(function(){
 			
-			$.ajax({
-
-				url: '/wallets/'+id,
-				//datatype: 'json',
-				type: 'PATCH',
-				data: {"current_value": currentNumUncut},
+			var count = $('#show_table_compact tr').slice(1).length;
+			var fullCount = $('#show_table tr').slice(1).length;
+	
+			//fill in remaining values in full table
+			$('#show_table tr').slice(1).each(function (i, row){
+			    
+			    var id = $(this).find("td:eq(0)").text();
+			    var name = $(this).find("td:eq(3)").text();
+			    
+			    
+			    
+			    $('#'+id+'_current_price').empty().append( $('#'+name+'_compact_current_price').text() );
+			    $('#'+id+'_total_value').empty().append( "$ "+numberWithCommas((parseFloat($('#'+id+'_quantity').text()) * parseFloat($('#'+id+'_current_price').text().replace("$", "").replace(",", ""))).toFixed(2)) );
 				
-				success: function(data) {
-					//var data = JSON.parse(data);
-					//alert(data);
-				},
+				
+				var q = $(this).find("td:eq(2)").text();
+				var quantity = parseFloat(q);
 
+				var totalPaid = parseFloat($('#'+id+'_quantity').text()) * parseFloat($('#'+id+'_paid').text().replace("$", "").replace(",", ""));
+				var totalValue = parseFloat( $('#'+id+'_quantity').text()) * parseFloat($('#'+id+'_current_price').text().replace("$", "").replace(",", "")).toFixed(2);
+				$('#'+id+'_profit').empty().append( "$ "+ numberWithCommas((totalValue - totalPaid).toFixed(2)));
+				numberWithCommas($('#'+id+'_current_price'));
+			
+				//final loop
+				if (i+1 === fullCount) {
+				
+				
+					//saveDB(totalValue);
+					//alert(totalValue);
 
-				failure: function() {
-
-					//alert("unsuccesful");
-				}
-
+				};
 			});
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -99,6 +143,8 @@ $( document ).ready( function() {
 			if (howmanytimes == count){
 				$("#myTotal").append("total = " + parseFloat(howmuch).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
 				//alert( $("#roomnumberToSave").text().trim() );
+				//alert(howmuch.toFixed(2));
+				saveDB(howmuch.toFixed(2));
 
 			};
 		});
@@ -108,18 +154,158 @@ $( document ).ready( function() {
 	
 	
 
-	function showTotal(total){
+
+
+
+	function enemyWhatsPrice(sym, name, quantity, enemycount){
+
+		$.getJSON('https://min-api.cryptocompare.com/data/price?fsym='+sym+'&tsyms=USD', function(json){
+
+			var currentPrice = parseFloat(json.USD);
+			currentPriceUncut = currentPrice.toFixed(2);
+			var sum = parseFloat(quantity) * parseFloat(currentPrice);
+			
+			enemyhowmuch = enemyhowmuch + sum;
+			currentPrice = numberWithCommas(currentPriceUncut);
+			
+			///apply values to compact table
+			$("#"+name+"_enemy_compact_current_price").append("$ "+currentPrice);
+			$("#"+name+"_enemy_compact_total_value").append("$ "+parseFloat(sum).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+			$("#"+name+"_enemy_compact_profit").append( "$ "+numberWithCommas(  ((parseFloat( $("#"+name+"_enemy_compact_total_value").text().replace("$", "").replace(",", "")).toFixed(2) -  parseFloat($("#"+name+"_enemy_compact_total_paid").text().replace("$", "").replace(",", "")) )).toFixed(2) )  );
+			
+		}).done(function(){
+			
+			var enemycount = $('#enemy_show_table_compact tr').slice(1).length;
+			var enemyfullCount = $('#enemy_show_table tr').slice(1).length;
+	
+			//fill in remaining values in full table
+			$('#enemy_show_table tr').slice(1).each(function (i, row){
+			    
+			    var id = $(this).find("td:eq(0)").text();
+			    var name = $(this).find("td:eq(3)").text();
+			    
+			    
+			    
+			    $('#'+id+'_enemy_current_price').empty().append( $('#'+name+'_enemy_compact_current_price').text() );
+			    $('#'+id+'_enemy_total_value').empty().append( "$ "+numberWithCommas((parseFloat($('#'+id+'_enemy_quantity').text()) * parseFloat($('#'+id+'_enemy_current_price').text().replace("$", "").replace(",", ""))).toFixed(2)) );
+				
+				
+				var q = $(this).find("td:eq(2)").text();
+				var quantity = parseFloat(q);
+
+				var totalPaid = parseFloat($('#'+id+'_enemy_quantity').text()) * parseFloat($('#'+id+'_enemy_paid').text().replace("$", "").replace(",", ""));
+				var totalValue = parseFloat( $('#'+id+'_enemy_quantity').text()) * parseFloat($('#'+id+'_enemy_current_price').text().replace("$", "").replace(",", "")).toFixed(2);
+				$('#'+id+'_enemy_profit').empty().append( "$ "+ numberWithCommas((totalValue - totalPaid).toFixed(2)));
+				numberWithCommas($('#'+id+'_enemy_current_price'));
+			
+				//final loop
+				if (i+1 === enemyfullCount) {
+				
+				
+					//saveDB(totalValue);
+					//alert(totalValue);
+
+				};
+			});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			enemyhowmanytimes += 1;
+			if (enemyhowmanytimes == enemycount){
+				
+				$("#enemy_myTotal").append("total = " + parseFloat(enemyhowmuch).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+				//alert( $("#roomnumberToSave").text().trim() );
+				//alert(howmuch.toFixed(2));
+				enemySaveDB(enemyhowmuch.toFixed(2));
+			};
+		});
+	
+	};
+
+
+
+
+
+	function saveDB(totalValue) {
+				// body...
+			
+				
+
+			$.ajax({
+
+				url: '/room/'+ $('#roomnumberToSave').text().trim(),
+				//datatype: 'json',
+				type: 'PATCH',
+				data: {"invested": parseFloat(totalValue)},
+				
+				success: function(data) {
+					//var data = JSON.parse(data);
+					//alert("over here");
+				},
+
+
+				failure: function() {
+
+					//alert("unsuccesful");
+				}
+
+			});
+
+
+		};
+
+
+	function enemySaveDB(totalValue) {
+				// body...
+			
+				
+
+			$.ajax({
+
+				url: '/room/'+ $('#roomnumberToSave').text().trim(),
+				//datatype: 'json',
+				type: 'PATCH',
+				data: {"enemy_invested": parseFloat(totalValue)},
+				
+				success: function(data) {
+					//var data = JSON.parse(data);
+					//alert("over there");
+				},
+
+
+				failure: function() {
+
+					//alert("unsuccesful");
+				}
+
+			});
+
+
+		};
+
 		
-		$("#myTotal").append("total = " + total);
+
 	
-	};
-	
-
-	function getTotal(){
-
-		t = $("#myTotal").val().trim();
-		//alert("t " + t)
-		return t;
-	};
-
 });
+
+
+
+
+
+
+
+
