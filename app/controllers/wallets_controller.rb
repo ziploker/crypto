@@ -62,26 +62,21 @@ class WalletsController < ApplicationController
     totalPrice = BigDecimal(paid) * BigDecimal(quantity)
     
     if totalPrice <= @room.bank
+      
       @room.bank -= totalPrice
-      
-
-      
-
-      
       @wallet = Wallet.create(wallet_params)
       @wallet.rooms << @room
       
-
       @room.save
       
-
-      
       if @wallet.save
+        
         session[:room] = @room.id
-        redirect_to(wallets_path)
+        redirect_to(battle_path(@room.battle_id))
+      
       else
        
-        redirect_to(wallets_path)
+        redirect_to(root_path)
       
       end
 
@@ -91,10 +86,12 @@ class WalletsController < ApplicationController
   end
 
   
+  
   def edit
     @wallet = Wallet.find(params[:id])
   end
 
+  
   
   def update
     @wallet = Wallet.find(params[:id])
@@ -103,17 +100,22 @@ class WalletsController < ApplicationController
  
       if @wallet.update(current_value: [:wallet][params[:current_value].to_i])
         
-        puts "saved them all"
     else
       render 'error'
     end
   end
 
+  
+
   def delete
   end
 
+  
+
   def destroy
   end
+
+  
 
   #room path to update room
   def updateRoom
@@ -121,16 +123,16 @@ class WalletsController < ApplicationController
     @battle = Battle.where(id: @room.battle_id)
     @user = current_user
    
-    #paid = params[:wallet][:paid]
-    #quantity = params[:wallet][:quantity]
-    
-    #totalPrice = paid.to_i * quantity.to_i
-     
-    #if totalPrice <= @room.bank
-    
     if params[:invested]
       @room.invested = BigDecimal(params[:invested])
       @room.total = @room.bank + @room.invested
+      
+      
+      respond_to do |format|
+        format.json {render :json => @room.total}
+      end
+      return
+    
     end
 
     if params[:enemy_invested]
@@ -146,41 +148,24 @@ class WalletsController < ApplicationController
       @room.enemy_invested = BigDecimal(params[:enemy_invested])
       @room.enemy_bank = @enemyRoom[0].bank
       @room.enemy_total = @room.enemy_bank + @room.enemy_invested
+
+      respond_to do |format|
+        format.json {render :json => @room.enemy_total}
+      end
+      return
       
     end
 
-      #newBalance = @room.balance - totalPrice
-      
-      
-
-      
-
-
-      
-      
-
-      
       if @room.save
         #session[:room] = @room.id
-        #redirect_to(wallets_path, data: "updatedededdit")
-        puts "okokokokokokokokokokokoko"
+        #get all names in wallet then remove duplicates
+        redirect_to(battle_path(@room.battle_id))
+       
       end
-       
-        
-
-      
-       
-
-        
-
-       
-       
-        
-
-
-        
-    
   end
+
+
+  
 
 
   private

@@ -1,3 +1,4 @@
+
 function numberWithCommas(number) {
     var parts = number.toString().split(".");
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -7,23 +8,11 @@ function numberWithCommas(number) {
 
 var howmuch = 0;
 var enemyhowmuch = 0;
-
 var howmanytimes = 0;
 var enemyhowmanytimes = 0;
 
-
-
-
-
-
 $( document ).ready( function() {
 	
-
-
-
-
-
-
 	//gets number of rows to process for final loop check below
 	var count = $('#show_table_compact tr').slice(1).length;
 	
@@ -45,10 +34,7 @@ $( document ).ready( function() {
 		};
 	});
 
-
-
-
-
+	
 
 	//gets number of rows to process for final loop check below
 	var enemycount = $('#enemy_show_table_compact tr').slice(1).length;
@@ -116,32 +102,14 @@ $( document ).ready( function() {
 				//final loop
 				if (i+1 === fullCount) {
 				
-				
-					//saveDB(totalValue);
-					//alert(totalValue);
-
 				};
 			});
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 			howmanytimes += 1;
 			if (howmanytimes == count){
-				$("#myTotal").append("total = " + parseFloat(howmuch).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+				$("#myTotal").append("totaL = " + parseFloat(howmuch).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+				$("#summary_invested").append("Invested = $ " + parseFloat(howmuch).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+				
 				//alert( $("#roomnumberToSave").text().trim() );
 				//alert(howmuch.toFixed(2));
 				saveDB(howmuch.toFixed(2));
@@ -153,10 +121,6 @@ $( document ).ready( function() {
 
 	
 	
-
-
-
-
 	function enemyWhatsPrice(sym, name, quantity, enemycount){
 
 		$.getJSON('https://min-api.cryptocompare.com/data/price?fsym='+sym+'&tsyms=USD', function(json){
@@ -201,33 +165,16 @@ $( document ).ready( function() {
 				//final loop
 				if (i+1 === enemyfullCount) {
 				
-				
-					//saveDB(totalValue);
-					//alert(totalValue);
-
 				};
 			});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 			enemyhowmanytimes += 1;
 			if (enemyhowmanytimes == enemycount){
 				
 				$("#enemy_myTotal").append("total = " + parseFloat(enemyhowmuch).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+				$("#enemy_summary_invested").append("Invested = $ " + parseFloat(enemyhowmuch).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+
 				//alert( $("#roomnumberToSave").text().trim() );
 				//alert(howmuch.toFixed(2));
 				enemySaveDB(enemyhowmuch.toFixed(2));
@@ -241,70 +188,87 @@ $( document ).ready( function() {
 
 
 	function saveDB(totalValue) {
-				// body...
+				
+		$.ajax({
+
+			url: '/room/'+ $('#roomnumberToSave').text().trim(),
+			datatype: 'json',
+			type: 'PATCH',
+			data: {"invested": parseFloat(totalValue)},
 			
+			success: function(data) {
+
+				wtf = parseFloat(data).toFixed(2);
+
 				
-
-			$.ajax({
-
-				url: '/room/'+ $('#roomnumberToSave').text().trim(),
-				//datatype: 'json',
-				type: 'PATCH',
-				data: {"invested": parseFloat(totalValue)},
 				
-				success: function(data) {
-					//var data = JSON.parse(data);
-					//alert("over here");
-				},
+				$('#summary_total').append( numberWithCommas( wtf));
+			},
 
 
-				failure: function() {
+			failure: function() {
 
-					//alert("unsuccesful");
-				}
+				//alert("unsuccesful");
+			}
+		});
+	};
 
-			});
-
-
-		};
-
-
-	function enemySaveDB(totalValue) {
-				// body...
-			
-				
-
-			$.ajax({
-
-				url: '/room/'+ $('#roomnumberToSave').text().trim(),
-				//datatype: 'json',
-				type: 'PATCH',
-				data: {"enemy_invested": parseFloat(totalValue)},
-				
-				success: function(data) {
-					//var data = JSON.parse(data);
-					//alert("over there");
-				},
-
-
-				failure: function() {
-
-					//alert("unsuccesful");
-				}
-
-			});
-
-
-		};
-
-		
 
 	
+
+	function enemySaveDB(totalValue) {
+
+		//$('#roomnumberToSave').append("adfgasdfasgasdfgasdgasdgas")  ;
+				
+		$.ajax({
+
+
+
+			url: '/room/'+ $('#roomnumberToSave').text().trim(),
+			datatype: 'json',
+			type: 'PATCH',
+			data: {"enemy_invested": parseFloat(totalValue)},
+			
+			success: function(data) {
+
+				omfg = parseFloat(data).toFixed(2);
+				
+				$('#enemy_summary_total').append( numberWithCommas(omfg ));
+
+			},
+
+
+			failure: function() {
+
+				//alert("unsuccesful");
+			}
+
+		});
+	};
+
+
+$("#wallet_quantity").change().keyup(function()  { 
+
+
+	 $("#confirm_actual_paid").val(  $("#wallet_quantity").val() * $("#wallet_paid").val()  );
+
+	 $("#confirm_bank").val(10000 - $("#confirm_actual_paid").val()  );
+
+});
+
+$("#spend_all").click(function()  { 
+
+	$("#wallet_quantity").val( 1000 / $("#wallet_paid").val() );
+
+
+
+	$("#confirm_actual_paid").val( $("#wallet_quantity").val() * $("#wallet_paid").val() )
+
 });
 
 
 
-
+});
 
 
 

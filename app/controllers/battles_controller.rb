@@ -63,15 +63,13 @@ class BattlesController < ApplicationController
 					@battle.users.each do |u|
 						if u.id != @user.id
 							@enemy = u
-							@enemyRoom = Room.where(user_id: @enemy, battle_id: @battle.id)
-							#session[:enemyroom] = @enemyRoom[0].id
+							@enemyRoom = Room.where(user_id: @enemy, battle_id: @uni.id)
+							session[:enemyroom] = @enemyRoom[0].id
 						
-							
 						end
 					end
-
 				end
-			end
+			
 
 			@flag = "false"
 
@@ -84,19 +82,14 @@ class BattlesController < ApplicationController
 					
 					if current_user.id == u.id 
 
-						#session[:room] = @room[0].id
+						session[:room] = @room[0].id
 
-						
 						@flag = "true"
 					end
 				end
 			end
 			
-			if @enemyroom != nil
-
-
-				
-			end
+			
 			
 			#if flagger is true, user belongs to battle 
 			#master_key = @user.battles.where(id: @battle.id )
@@ -117,34 +110,42 @@ class BattlesController < ApplicationController
 		    @enemynombres = []
 		    
 		    #set session variables
-		    @roomnumber = @room[0].id
-		    @enemyroomnumber = @enemyRoom[0].id
+		    	
+		    	#@roomnumber = @room[0].id
+	    	
+	    	if @enemyRoom
+		   		
+		   		@enemyroomnumber = @enemyRoom[0].id
+	   		
 		    
-		    #set room for both players
-		    ##@room = Room.find(@roomnumber)
-		    @enemyroom = Room.find(@enemyroomnumber)
+		    	#set room for both players
+		    	##@room = Room.find(@roomnumber)
+		    	@enemyroom = Room.find(@enemyroomnumber)
+		    	@enemywallet = @enemyroom.wallets
+
+		    	@enemywallet.each do |r|
+		      	@enemynombres.push(r.name)
+		      	@enemynombres = @enemynombres.uniq
+		    end
 		    
-		    #set enemy user object
-		    ##enemy = User.where(id: @enemyroom.user_id)
-		    ##@enemy = enemy[0]
 		    
 		    #set wallets
 		    @mywallet = @room[0].wallets
-		    @enemywallet = @enemyroom.wallets
 		   
-		    #get all names in wallet then remove duplicates
-		    @mywallet.each do |record|
-		      @names.push(record.name)
-		    end
-		    
-		    @enemywallet.each do |r|
-		      @enemynombres.push(r.name)
+		   	end	    
+
+		   	if @mywallet
+			   	
+			   	#get all names in wallet then remove duplicates
+			    @mywallet.each do |record|
+			      @names.push(record.name)
+			    end
 		    end
 		    
 		    #remove duplicates
 		    @names = @names.uniq
-		    @enemynombres = @enemynombres.uniq
-
+		    
+		    end
 		end
 	end
 
@@ -166,23 +167,17 @@ class BattlesController < ApplicationController
 					puts "if " + flag
 				end
 			end
-			puts "else " + flag
+			
 			if flag == "off"
 				@battle.update(battle_params)
 				@battle.users << @user
-				#S@battle.rooms[1].ballance = 100000
-
-				#@room = Room.where(battle_id: params[:id], user_id: current_user.id)
-				puts @room.inspect
-
 				
 				redirect_to battle_path(@battle)
-				puts "savit no dup"
+				
 			else
 				puts "duplicate happeenning"
 			end
-			#@battle.update(battle_params)
-			#redirect_to(battle_path(@battle.id) )
+			
 		else
 			redirect_to new_user_registration_path
 		end

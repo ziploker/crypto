@@ -59,13 +59,27 @@ buy shir for user_id -> <%= @room.user_id %>
 				<%= form_for @wallet do |f| %>
 					<%= f.text_field :abbr, placeholder: "abbr" %>
 					<%= f.text_field :name, placeholder: "Name" %>
-					<%= f.number_field :quantity, placeholder: "QNTY", min: 1  %>
+					<%= f.number_field :quantity, placeholder: "QNTY", min: 0, step: :any  %>
 					<%= f.text_field :paid, placeholder: "PAID" %>
 					<%= f.text_field :url, placeholder: "URL" %>
 					<%= f.number_field :room, value: @room.id %>
 					<%= f.submit "Buy" %>
 				
 				<% end %>
+
+
+				<form>
+  					Actual PAID<br>
+  					<input type="number" id="confirm_actual_paid" >
+				  <br>
+				  Bank<br>
+				  <input type="number" id="confirm_bank" value="10000">
+				  <br><br>
+				 
+				</form> 
+
+
+				<button id="spend_all"> ALL </button>
 			<% end %>
 
 			
