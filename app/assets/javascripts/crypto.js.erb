@@ -238,6 +238,129 @@ $(document).ready(function(){
 			
 		});
 
+
+
+		$.ajax({
+
+
+
+			url: '/fetch',
+			datatype: 'json',
+			type: 'get',
+			
+			
+			success: function(data) {
+
+				$("#confirm_bank_hidden").val(data);
+				$("#confirm_bank").val(data);
+
+				
+			},
+
+
+			failure: function() {
+
+				//alert("unsuccesful");
+			}
+
+		});
+
+$("#confirm_actual_paid").keyup(function()  { 
+
+	$("#confirm_bank").val( $("#confirm_bank_hidden").val() );
+
+
+});
+
+
+$("#confirm_actual_paid").keyup(function()  { 
+
+	$("#wallet_quantity").val( $("#confirm_actual_paid").val() / $("#wallet_paid").val() );
+	 $("#confirm_bank").val($("#confirm_bank").val() - $("#confirm_actual_paid").val()  );
+
+
+
+});
+
+$("#wallet_quantity").keydown(function()  { 
+
+	$("#confirm_bank").val( $("#confirm_bank_hidden").val() );
+
+
+});
+
+$("#wallet_quantity").keyup(function()  { 
+
+
+	 $("#confirm_actual_paid").val(  $("#wallet_quantity").val() * $("#wallet_paid").val()  );
+
+	 $("#confirm_bank").val($("#confirm_bank").val() - $("#confirm_actual_paid").val()  );
+
+});
+
+$("#spend_all").click(function()  { 
+
+	$("#wallet_quantity").val( $("#confirm_bank").val() / $("#wallet_paid").val() );
+
+
+
+	$("#confirm_actual_paid").val( $("#wallet_quantity").val() * $("#wallet_paid").val() )
+
+});
+
+
+	});
+
+
+
+
+
+
+
+
+
+
+	$('#show_table_div').on("click", '#show_table_compact tr', function(){
+
+		$('#show_sell_div').toggle();
+		$('#wallets').toggle();
+		
+
+		var abbr = $(this).closest("tr").children("td:eq(0)").text();
+		var name = $(this).closest("tr").children("td:eq(1)").text();
+		var quantity = $(this).closest("tr").children("td:eq(2)").text();
+		var total_value = $(this).closest("tr").children("td:eq(4)").text();
+		var total_paid = $(this).closest("tr").children("td:eq(5)").text();
+		var profit_loss = $(this).closest("tr").children("td:eq(6)").text();
+
+
+		$.getJSON('https://min-api.cryptocompare.com/data/price?fsym='+abbr+'&tsyms=USD', function(json){
+			
+			$("#show_sell_abbr").append(abbr);
+			$("#show_sell_name").append(name);
+			$("#show_sell_quantity").append(quantity);
+			$("#show_sell_current_price").append(json.USD);
+			$("#show_sell_total_value").append(total_value);
+			$("#show_sell_total_paid").append(total_paid);
+			
+			$("#show_sell_quantity_to_sell").attr({
+       			"max" : quantity         // values (or variables) here
+    		});
+
+
+
+		});
+
+		
+			
+
+				
+
+			
+		
+	
+		
+
 	});
 
 

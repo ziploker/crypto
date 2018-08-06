@@ -19,6 +19,7 @@ post '/', to: 'markets#index'
 
 get '/refresh', to: 'battles#refresh'
 
+get '/fetch', to: 'wallets#fetch'
 
 
 

@@ -60,8 +60,9 @@ class WalletsController < ApplicationController
     paid = params[:wallet][:paid]
     quantity = params[:wallet][:quantity]
     totalPrice = BigDecimal(paid) * BigDecimal(quantity)
+    puts totalPrice.round(4).to_s+ " sssssssssssssssssssssssssssss "+ @room.bank.round(4).to_s
     
-    if totalPrice <= @room.bank
+    if totalPrice.round(4) <= @room.bank.round(4)
       
       @room.bank -= totalPrice
       @wallet = Wallet.create(wallet_params)
@@ -165,11 +166,21 @@ class WalletsController < ApplicationController
   end
 
 
+def fetch
+@cuarto = Room.find(session[:room])
+
+
+  respond_to do |format|
+    format.json {render :json => @cuarto.bank}
+    
+  end
+
+end
   
 
 
   private
     def wallet_params
-      params.require(:wallet).permit(:abbr, :name, :quantity, :paid, :current_value, :profit_loss, :url, :bank, :total, :invested, :enemy_bank, :enemy_invested, :enemy_total)
+      params.require(:wallet).permit(:abbr, :name, :quantity, :paid, :current_value, :profit_loss, :url, :bank, :total, :invested, :enemy_bank, :enemy_invested, :enemy_total, :trans_type)
     end
 end

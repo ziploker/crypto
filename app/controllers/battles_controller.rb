@@ -75,6 +75,8 @@ class BattlesController < ApplicationController
 
 			
 			@room = Room.where(user_id: current_user.id, battle_id: @battle.id)
+
+
 			
 			
 			if @battle.users.count >= 2
@@ -153,6 +155,8 @@ class BattlesController < ApplicationController
 
 
 	def update
+
+		
 		@user = current_user
 		@battle = Battle.find(params[:id])
 

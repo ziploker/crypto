@@ -247,25 +247,15 @@ $( document ).ready( function() {
 	};
 
 
-$("#wallet_quantity").change().keyup(function()  { 
-
-
-	 $("#confirm_actual_paid").val(  $("#wallet_quantity").val() * $("#wallet_paid").val()  );
-
-	 $("#confirm_bank").val(10000 - $("#confirm_actual_paid").val()  );
-
-});
-
-$("#spend_all").click(function()  { 
-
-	$("#wallet_quantity").val( 1000 / $("#wallet_paid").val() );
 
 
 
-	$("#confirm_actual_paid").val( $("#wallet_quantity").val() * $("#wallet_paid").val() )
 
-});
 
+
+
+
+	
 
 
 });
